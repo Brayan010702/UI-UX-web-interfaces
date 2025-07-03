@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University News Platform - Featured Story</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        /* Focus styles for keyboard navigation */
+        .focus-highlight:focus {
+            outline: 3px solid #10b981;
+            outline-offset: 2px;
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        #shortcutsPanel {
+            animation: fadeIn 0.3s ease-out;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 0.5rem;
+            z-index: 50;
+            border-radius: 0.75rem;
+            width: 18rem;
+            padding: 1.25rem;
+            background: rgba(15, 23, 42, 0.798);
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            color: white;
+        }
+
+        #shortcutsPanel h3 {
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15); 
+        }
+
+        #shortcutsPanel ul {
+            padding-left: 0.25rem;
+        }
+
+        #shortcutsPanel li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+
+        #shortcutsPanel kbd {
+            background: #0f172a;
+            padding: 0.35rem 0.75rem;
+            border-radius: 0.375rem;
+            margin-right: 1rem;
+            font-weight: 600;
+            min-width: 3rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #shortcutsPanel span {
+            flex-grow: 1;
+        }
+
+        #closePanel {
+            transition: transform 0.2s ease;
+        }
+
+        #closePanel:hover {
+            color: #068e61ce;
+            transform: scale(1.1);
+        }
+
+        #infoButton:focus {
+            outline: 1px solid #047c56ce;
+            outline-offset: 1px;
+        }
+        main, main * {
+            font-family: 'Georgia', serif!important;
+        }
+        .theme-toggle {
+        --size: 1.5rem;
+        --icon-color: currentColor;
+        --transition-duration: 0.5s;
+        --transition-easing: cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        
+        background: none;
+        border: none;
+        padding: 0;
+        width: var(--size);
+        height: var(--size);
+        cursor: pointer;
+        outline: none;
+        transition: transform 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+        transform: scale(1.1);
+        }
+
+        .theme-toggle:active {
+        transform: scale(0.9);
+        }
+
+        .theme-toggle__icon {
+        width: 100%;
+        height: 100%;
+        fill: none;
+        stroke: var(--icon-color);
+        stroke-width: 1.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition: stroke var(--transition-duration) ease;
+        }
+
+        .theme-toggle__sun {
+        transform-origin: center;
+        transition: transform var(--transition-duration) var(--transition-easing),
+                    opacity var(--transition-duration) ease;
+        }
+
+        .theme-toggle__sun-ray {
+        opacity: 1;
+        transform-origin: center;
+        transition: transform var(--transition-duration) var(--transition-easing),
+                    opacity var(--transition-duration) ease;
+        }
+
+        .theme-toggle__moon {
+        opacity: 0;
+        transform: scale(0.6) rotate(90deg);
+        transform-origin: center;
+        transition: transform var(--transition-duration) var(--transition-easing),
+                    opacity var(--transition-duration) ease;
+        }
+
+        [data-theme="dark"] .theme-toggle__sun {
+        transform: scale(0.7) rotate(45deg);
+        opacity: 0;
+        }
+
+        [data-theme="dark"] .theme-toggle__sun-ray {
+        transform: rotate(45deg);
+        opacity: 0;
+        }
+
+        [data-theme="dark"] .theme-toggle__moon {
+        opacity: 1;
+        transform: scale(1) rotate(0);
+        }
+        [data-theme="dark"] {
+            --bg-color: #1a202c;
+            --text-color: #f7fafc;
+            --header-bg: #0f172a;
+            --card-bg: #2d3748;
+            --border-color: #1a202c4d; 
+            --border-width: 1px;
+            --primary-color: #3B82F6;
+            --secondary-color: #10B981;
+            --accent-color: #60A5FA;
+        }
+
+        [data-theme="dark"] body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .bg-white {
+            background-color: var(--card-bg) !important;
+            color: var(--text-color);
+            border: var(--border-width) solid var(--border-color) !important; 
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important; 
+        }
+
+        [data-theme="dark"] .bg-gray-50 {
+            background-color: #2d3748 !important;
+        }
+
+        [data-theme="dark"] .bg-blue-500 {
+            background-color: var(--primary-color) !important;
+        }
+
+        [data-theme="dark"] .text-gray-700,
+        [data-theme="dark"] .text-gray-600,
+        [data-theme="dark"] .text-gray-500,
+        [data-theme="dark"] .text-gray-800 {
+            color: #e2e8f0 !important;
+        }
+
+        [data-theme="dark"] .border-gray-200 {
+            border-color: var(--border-color) !important;
+        }
+
+        [data-theme="dark"] .bg-green-50 {
+            background-color: #1a3a2e !important;
+        }
+
+        [data-theme="dark"] footer {
+            background-color: var(--header-bg) !important;
+        }
+
+        [data-theme="dark"] .bg-slate-900 {
+            background-color: var(--header-bg) !important;
+        }
+
+        [data-theme="dark"] .text-blue-600 {
+            color: var(--accent-color) !important;
+        }
+
+        [data-theme="dark"] .text-green-600 {
+            color: var(--secondary-color) !important;
+        }
+
+        [data-theme="dark"] .bg-green-500 {
+            background-color: var(--secondary-color) !important;
+        }
+
+        [data-theme="dark"] .border-gray-200 {
+            border-color: var(--border-color) !important;
+        }
+
+        [data-theme="dark"] .bg-green-700 {
+            background-color: #047857 !important;
+        }
+
+        [data-theme="dark"] .bg-green-600 {
+            background-color: #059669 !important;
+        }
+
+        [data-theme="dark"] .bg-blue-600 {
+            background-color: #2563eb !important;
+        }
+
+        [data-theme="dark"] .text-blue-100 {
+            color: #bfdbfe !important;
+        }
+
+        [data-theme="dark"] .prose ul li {
+            color: #e2e8f0 !important;
+        }
+
+        [data-theme="dark"] .bg-gray-200 {
+            background-color: #4a5568 !important;
+        }
+
+        [data-theme="dark"] input {
+            background-color: #1a202c !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-color) !important;
+        }
+
+        [data-theme="dark"] input::placeholder {
+            color: #a0aec0 !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header Navigation -->
+    <header class="bg-slate-900 text-white shadow-sm">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold">University News Hub</h1>
+                    <nav class="flex items-center space-x-4 relative">
+                        <button id="infoButton" class="text-white hover:text-green-300 transition focus:outline-none focus:ring-2 focus:ring-green-500 rounded-full p-1" aria-label="Show keyboard shortcuts">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </button>
+                        <button id="theme-toggle" class="theme-toggle" aria-label="Alternar modo oscuro">
+                        <svg class="theme-toggle__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path class="theme-toggle__sun" d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"/>
+                            <path class="theme-toggle__sun-ray" d="M12 4V2M12 22V20M4 12H2M22 12H20"/>
+                            <path class="theme-toggle__sun-ray" d="M19.071 19.071L17.657 17.657M6.343 6.343L4.929 4.929"/>
+                            <path class="theme-toggle__sun-ray" d="M19.071 4.929L17.657 6.343M6.343 17.657L4.929 19.071"/>
+                            <path class="theme-toggle__moon" d="M20.9999 12.79C20.8426 14.4922 20.2038 16.1144 19.1581 17.4668C18.1125 18.8192 16.7034 19.8458 15.0956 20.4265C13.4878 21.0073 11.7479 21.1181 10.0794 20.7461C8.41092 20.3741 6.8829 19.5345 5.67413 18.3258C4.46536 17.117 3.62584 15.589 3.25381 13.9205C2.88178 12.252 2.99262 10.5121 3.57336 8.9043C4.15411 7.29651 5.18073 5.88737 6.53311 4.84175C7.8855 3.79614 9.5077 3.15731 11.2099 3C10.2133 4.34827 9.73375 6.00945 9.85843 7.68141C9.98312 9.35338 10.7038 10.9251 11.8893 12.1106C13.0748 13.2961 14.6465 14.0168 16.3184 14.1415C17.9904 14.2662 19.6516 13.7866 20.9999 12.79Z"/>
+                        </svg>
+                        </button>
+                        <!-- Keyboard Shortcuts Panel -->
+                        <div id="shortcutsPanel" class="hidden">
+                            <div class="flex justify-between items-start">
+                                <h3 class="font-bold text-lg mb-3">Keyboard Shortcuts</h3>
+                                <button id="closePanel" class="text-white hover:text-green-200 focus:outline-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <ul class="space-y-2">
+                                <li class="flex items-center">
+                                    <kbd class="bg-slate-600 px-2 py-1 rounded mr-2">H</kbd>
+                                    <span>Jump to Headline</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <kbd class="bg-slate-600 px-2 py-1 rounded mr-2">M</kbd>
+                                    <span>Jump to Main Story</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <kbd class="bg-slate-600px-2 py-1 rounded mr-2">S</kbd>
+                                    <span>Jump to Sidebar</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <kbd class="bg-slate-600 px-2 py-1 rounded mr-2">ESC</kbd>
+                                    <span>Close image modal</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Article Section -->
+            <div class="lg:col-span-2">
+            <!-- Featured Headline -->
+            <section id="headline" class="mb-8 fade-in focus-highlight" tabindex="-1">
+                <div class="bg-blue-950 text-white p-6 rounded-lg">
+                    <button id="backButton" class="hidden bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded transition flex items-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        Home
+                    </button>
+                    <span class="inline-block bg-green-800 px-3 py-1 rounded-full text-sm font-semibold mb-3">FEATURED STORY</span>
+                    <h2 class="text-4xl font-bold mb-3">University Launches Revolutionary Sustainability Initiative for Carbon-Neutral Campus by 2030</h2>
+                    <div class="flex items-center text-blue-100 mb-4">
+                        <span class="mr-4">By Sarah Johnson</span>
+                        <span class="mr-4">|</span>
+                        <span>November 15, 2023</span>
+                        <span class="mx-4">|</span>
+                        <span>5 min read</span>
+                        <span class="mx-4">|</span>
+                        <span>Categories: <span class="text-green-300">Sustainability</span>, <span class="text-green-300">Campus News</span></span>
+                    </div>
+                    <div class="flex space-x-4">
+                        <button id="shareButton" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                            </svg>
+                            Share
+                        </button>
+                        <button id="saveButton" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                            </svg>
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+                <!-- Main Story Content -->
+                <article id="main-content" class="bg-white rounded-lg p-6 shadow-sm fade-in focus-highlight" tabindex="-1">
+                    <!-- Lead Image -->
+                    <div class="mb-6">
+                        <img src="https://via.placeholder.com/800x400/3B82F6/FFFFFF?text=Sustainability+Initiative+Launch" 
+                             alt="Sustainability Initiative Launch" 
+                             class="w-full rounded-lg cursor-pointer hover:opacity-90 transition expandable-image"
+                             data-full-src="https://via.placeholder.com/1200x800/3B82F6/FFFFFF?text=Sustainability+Initiative+Launch+Full">
+                        <p class="text-sm text-gray-600 mt-2">Students and faculty gather for the announcement of the new sustainability initiative</p>
+                    </div>
+
+                    <!-- Article Body -->
+                    <div class="prose prose-lg max-w-none">
+                        <p class="text-gray-700 leading-relaxed mb-4">
+                            In a groundbreaking announcement today, the University unveiled its comprehensive plan to achieve carbon neutrality by 2030, marking one of the most ambitious sustainability initiatives in higher education. The multi-million dollar program will transform campus operations, academic programs, and student life.
+                        </p>
+
+                        <p class="text-gray-700 leading-relaxed mb-4">
+                            President Maria Rodriguez addressed a packed auditorium of students, faculty, and staff, outlining the university's commitment to environmental leadership. "This initiative represents more than just reducing our carbon footprint," Rodriguez stated. "It's about preparing our students to be leaders in a sustainable future."
+                        </p>
+
+                        <!-- Inline Image Gallery -->
+                        <div class="grid grid-cols-2 gap-4 my-6">
+                            <img src="https://via.placeholder.com/400x300/10B981/FFFFFF?text=Solar+Panel+Installation" 
+                                 alt="Solar Panel Installation" 
+                                 class="rounded-lg cursor-pointer hover:opacity-90 transition expandable-image"
+                                 data-full-src="https://via.placeholder.com/1200x900/10B981/FFFFFF?text=Solar+Panel+Installation+Full">
+                            <img src="https://via.placeholder.com/400x300/3B82F6/FFFFFF?text=Green+Building+Design" 
+                                 alt="Green Building Design" 
+                                 class="rounded-lg cursor-pointer hover:opacity-90 transition expandable-image"
+                                 data-full-src="https://via.placeholder.com/1200x900/3B82F6/FFFFFF?text=Green+Building+Design+Full">
+                        </div>
+
+                        <h3 class="text-2xl font-bold text-blue-600 mb-3">Key Components of the Initiative</h3>
+                        
+                        <p class="text-gray-700 leading-relaxed mb-4">
+                            The sustainability plan encompasses several major areas of campus life and operations:
+                        </p>
+
+                        <ul class="list-disc list-inside mb-4 text-gray-700">
+                            <li class="mb-2">Installation of solar panels on all campus buildings by 2025</li>
+                            <li class="mb-2">Transition to 100% renewable energy sources</li>
+                            <li class="mb-2">Implementation of comprehensive recycling and composting programs</li>
+                            <li class="mb-2">Creation of new sustainability-focused academic programs</li>
+                            <li class="mb-2">Development of green transportation infrastructure</li>
+                        </ul>
+
+                        <!-- Video Placeholder -->
+                        <div class="bg-gray-200 rounded-lg p-8 my-6 text-center relative group cursor-pointer">
+                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition rounded-lg"></div>
+                            <svg class="w-16 h-16 mx-auto mb-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path>
+                            </svg>
+                            <p class="text-gray-600 font-semibold">Video: President Rodriguez Announces Sustainability Initiative</p>
+                            <p class="text-sm text-gray-500 mt-1">Duration: 3:45</p>
+                        </div>
+
+                        <h3 class="text-2xl font-bold text-green-600 mb-3">Student Involvement and Benefits</h3>
+                        
+                        <p class="text-gray-700 leading-relaxed mb-4">
+                            Students will play a crucial role in the initiative's success. The university is establishing a Student Sustainability Council that will have direct input on implementation strategies and will manage a dedicated budget for student-led environmental projects.
+                        </p>
+
+                        <blockquote class="border-l-4 border-green-500 pl-4 my-6 italic text-gray-700">
+                            "This is exactly what we've been advocating for. It shows that student voices are being heard and that the university is serious about preparing us for the challenges ahead."
+                            <cite class="block mt-2 not-italic font-semibold">- Alex Chen, Student Body President</cite>
+                        </blockquote>
+
+                        <p class="text-gray-700 leading-relaxed mb-4">
+                            The initiative will also create numerous opportunities for students, including paid internships in sustainability offices, research positions in renewable energy labs, and new course offerings in environmental science and sustainable business practices.
+                        </p>
+
+                        <!-- Additional Image -->
+                        <div class="my-6">
+                            <img src="https://via.placeholder.com/800x450/10B981/FFFFFF?text=Students+Working+on+Green+Projects" 
+                                 alt="Students Working on Green Projects" 
+                                 class="w-full rounded-lg cursor-pointer hover:opacity-90 transition expandable-image"
+                                 data-full-src="https://via.placeholder.com/1200x675/10B981/FFFFFF?text=Students+Working+on+Green+Projects+Full">
+                            <p class="text-sm text-gray-600 mt-2">Students collaborate on renewable energy research in the new sustainability lab</p>
+                        </div>
+
+                        <h3 class="text-2xl font-bold text-blue-600 mb-3">Timeline and Next Steps</h3>
+                        
+                        <p class="text-gray-700 leading-relaxed mb-4">
+                            The rollout will begin immediately with the formation of implementation committees and the launch of pilot programs in select dormitories and academic buildings. Major milestones include:
+                        </p>
+
+                        <div class="bg-green-50 border-l-4 border-green-500 p-4 my-4">
+                            <ul class="space-y-2 text-gray-700">
+                                <li><strong>Spring 2024:</strong> Launch of campus-wide recycling program</li>
+                                <li><strong>Fall 2024:</strong> First solar panel installations begin</li>
+                                <li><strong>2025:</strong> New sustainability curriculum introduced</li>
+                                <li><strong>2027:</strong> 50% carbon reduction target</li>
+                                <li><strong>2030:</strong> Achieve carbon neutrality</li>
+                            </ul>
+                        </div>
+
+                        <p class="text-gray-700 leading-relaxed">
+                            As the university embarks on this transformative journey, it joins a growing movement of educational institutions taking bold action on climate change. The success of this initiative could serve as a model for universities worldwide, demonstrating that academic excellence and environmental stewardship can go hand in hand.
+                        </p>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Sidebar -->
+            <aside id="sidebar" class="focus-highlight" tabindex="-1">
+                <div class="bg-white rounded-lg p-6 shadow-sm fade-in">
+                    <h3 class="text-xl font-bold text-blue-600 mb-4">Related Stories</h3>
+                    
+                    <!-- Related Article 1 -->
+                    <div class="mb-6 pb-6 border-b border-gray-200 related-story" data-story-id="green-funding">
+                        <img src="https://via.placeholder.com/300x180/3B82F6/FFFFFF?text=Research+Grant" 
+                            alt="Research Grant" 
+                            class="w-full rounded mb-3">
+                        <h4 class="font-semibold text-gray-800 mb-2 hover:text-blue-600 cursor-pointer">
+                            University Secures $3.2M to Expand Urban Agriculture Program
+                        </h4>
+                        <p class="text-sm text-gray-600 mb-2">
+                            Urban gardens on campus will see a major expansion thanks to new funding
+                        </p>
+                        <span class="text-xs text-gray-500">2 days ago</span>
+                    </div>
+
+                    <!-- Related Article 2 -->
+                    <div class="mb-6 pb-6 border-b border-gray-200 related-story" data-story-id="ai-partnership">
+                        <img src="https://images.pexels.com/photos/305833/pexels-photo-305833.jpeg" 
+                            alt="Green Building" 
+                            class="w-full rounded mb-3">
+                        <h4 class="font-semibold text-gray-800 mb-2 hover:text-blue-600 cursor-pointer">
+                            New AI Partnership Aims to Advance Ethical Tech Development
+                        </h4>
+                        <p class="text-sm text-gray-600 mb-2">
+                            Representatives from both institutions sign the AI ethics partnership agreement                        </p>
+                        <span class="text-xs text-gray-500">1 week ago</span>
+                    </div>
+
+                    <!-- Related Article 3 -->
+                    <div class="mb-6 pb-6 border-b border-gray-200 related-story" data-story-id="library-renovation">
+                        <img src="https://via.placeholder.com/300x180/3B82F6/FFFFFF?text=Student+Protest" 
+                            alt="Student Protest" 
+                            class="w-full rounded mb-3">
+                        <h4 class="font-semibold text-gray-800 mb-2 hover:text-blue-600 cursor-pointer">
+                            Students Applaud Completion of Modernized Library Renovation         
+                       </h4>
+                        <p class="text-sm text-gray-600 mb-2">
+                            New collaborative study spaces inside the renovated library
+                        </p>
+                        <span class="text-xs text-gray-500">2 weeks ago</span>
+                    </div>
+
+                    <!-- Newsletter Signup -->
+                    <div class="bg-green-50 p-4 rounded-lg mt-6">
+                        <h4 class="font-semibold text-green-700 mb-2">Stay Updated</h4>
+                        <p class="text-sm text-gray-700 mb-3">Get the latest campus news delivered to your inbox</p>
+                        <input type="email" placeholder="Your email" class="w-full px-3 py-2 border border-gray-300 rounded mb-2">
+                        <button class="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 transition">Subscribe</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="relative max-w-6xl w-full">
+            <button id="closeModal" class="absolute -top-10 right-0 text-white text-4xl hover:text-gray-300">&times;</button>
+            <img id="modalImage" src="" alt="Expanded image" class="w-full h-auto rounded-lg">
+        </div>
+    </div>
+
+    <script>
+        let storyHistory = [];
+        const backButton = document.getElementById('backButton');
+        document.addEventListener('DOMContentLoaded', () => {
+            new ThemeToggle();
+            setupRelatedStories();
+            setupEventListeners(); 
+        });
+
+        document.querySelectorAll('.related-story').forEach(storyElement => {
+            storyElement.addEventListener('click', (e) => {
+                if (e.target.tagName === 'A') return;
+                
+                const storyId = storyElement.dataset.storyId;
+                loadStory(storyId);
+            });
+        });
+
+        document.querySelectorAll('.related-story h4').forEach(title => {
+            title.addEventListener('click', (e) => {
+                const storyElement = title.closest('.related-story');
+                const storyId = storyElement.dataset.storyId;
+                loadStory(storyId);
+            });
+        });
+
+        function setupEventListeners() {
+            const oldBackButton = document.getElementById('backButton');
+            const oldShareButton = document.getElementById('shareButton');
+            const oldSaveButton = document.getElementById('saveButton');
+            
+            if (oldBackButton) oldBackButton.removeEventListener('click', handleBackClick);
+            if (oldShareButton) oldShareButton.removeEventListener('click', shareArticle);
+            if (oldSaveButton) oldSaveButton.removeEventListener('click', saveArticle);
+
+            document.getElementById('backButton').addEventListener('click', handleBackClick);
+            document.getElementById('shareButton').addEventListener('click', shareArticle);
+            document.getElementById('saveButton').addEventListener('click', saveArticle);
+        }
+
+        function handleBackClick() {
+            if (storyHistory.length > 0) {
+                const previousStory = storyHistory.pop();
+
+                document.getElementById('headline').innerHTML = previousStory.headline;
+                document.getElementById('main-content').innerHTML = previousStory.content;
+
+                setupEventListeners();
+                attachImageModalListeners();
+
+                if (storyHistory.length === 0) {
+                    document.getElementById('backButton').classList.add('hidden');
+                }
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function setupRelatedStories() {
+            document.querySelectorAll('.related-story').forEach(storyElement => {
+                storyElement.addEventListener('click', (e) => {
+                    if (e.target.tagName === 'A' || e.target.closest('a')) return;
+                    
+                    const storyId = storyElement.dataset.storyId;
+                    if (storyId && newsStories[storyId]) {
+                        loadStory(storyId);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.related-story h4').forEach(title => {
+                title.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const storyElement = title.closest('.related-story');
+                    const storyId = storyElement.dataset.storyId;
+                    if (storyId && newsStories[storyId]) {
+                        loadStory(storyId);
+                    }
+                });
+            });
+        }
+
+        function loadStory(storyId) {
+            const story = newsStories[storyId];
+            if (!story) return;
+
+            if (storyHistory.length === 0) {
+                storyHistory.push({
+                    headline: document.getElementById('headline').innerHTML,
+                    content: document.getElementById('main-content').innerHTML
+                });
+            }
+
+            const headlineSection = document.getElementById('headline');
+            headlineSection.innerHTML = `
+                <div class="bg-blue-950 text-white p-6 rounded-lg">
+                    <span class="inline-block bg-green-800 px-3 py-1 rounded-full text-sm font-semibold mb-3">RELATED STORY</span>
+                    <h2 class="text-4xl font-bold mb-3">${story.title}</h2>
+                    <div class="flex items-center text-blue-100 mb-4">
+                        <span class="mr-4">By ${story.author}</span>
+                        <span class="mr-4">|</span>
+                        <span>${story.date}</span>
+                        <span class="mx-4">|</span>
+                        <span>${story.readTime}</span>
+                        <span class="mx-4">|</span>
+                        <span>Categories: ${story.categories.map(cat => 
+                            `<span class="text-green-300">${cat}</span>`
+                        ).join(', ')}</span>
+                    </div>
+                    <div class="flex space-x-4">
+                        <button id="backButton" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded transition flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                            </svg>
+                            Home
+                        </button>
+                        <button id="shareButton" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                            </svg>
+                            Share
+                        </button>
+                        <button id="saveButton" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                            </svg>
+                            Save
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            const mainContent = document.getElementById('main-content');
+            mainContent.innerHTML = `
+                <div class="prose prose-lg max-w-none"></div>
+            `;
+
+            const proseSection = mainContent.querySelector('.prose');
+            document.getElementById('shareButton').addEventListener('click', shareArticle);
+            document.getElementById('saveButton').addEventListener('click', saveArticle);
+            const articleFooter = mainContent.querySelector('.article-footer') || 
+                                mainContent.querySelector('.border-t.border-gray-200');
+            
+            const newContent = document.createElement('div');
+            newContent.className = 'prose prose-lg max-w-none';
+            
+            if (story.leadImage) {
+                const imgDiv = document.createElement('div');
+                imgDiv.className = 'mb-6';
+                
+                const img = document.createElement('img');
+                img.src = story.leadImage;
+                img.dataset.fullSrc = story.leadImageFull || story.leadImage;
+                img.alt = story.title;
+                img.className = 'w-full rounded-lg cursor-pointer hover:opacity-90 transition expandable-image';
+                imgDiv.appendChild(img);
+                
+                if (story.leadImageCaption) {
+                    const caption = document.createElement('p');
+                    caption.className = 'text-sm text-gray-600 mt-2';
+                    caption.textContent = story.leadImageCaption;
+                    imgDiv.appendChild(caption);
+                }
+                
+                newContent.appendChild(imgDiv);
+            }
+
+            story.content.forEach(contentItem => {
+                if (contentItem.type === 'paragraph') {
+                    const p = document.createElement('p');
+                    p.className = 'text-gray-700 leading-relaxed mb-4';
+                    p.textContent = contentItem.text;
+                    newContent.appendChild(p);
+                } 
+                else if (contentItem.type === 'heading') {
+                    const h = document.createElement(`h${contentItem.level || 3}`);
+                    h.className = `text-${contentItem.size || '2xl'} font-bold text-${contentItem.color || 'blue'}-600 mb-3`;
+                    h.textContent = contentItem.text;
+                    newContent.appendChild(h);
+                }
+                else if (contentItem.type === 'gallery') {
+                    const galleryDiv = document.createElement('div');
+                    galleryDiv.className = 'grid grid-cols-2 gap-4 my-6';
+                    
+                    contentItem.images.forEach(imgData => {
+                        const img = document.createElement('img');
+                        img.src = imgData.src;
+                        img.dataset.fullSrc = imgData.fullSrc || imgData.src;
+                        img.alt = imgData.alt;
+                        img.className = 'rounded-lg cursor-pointer hover:opacity-90 transition expandable-image';
+                        galleryDiv.appendChild(img);
+                    });
+                    
+                    newContent.appendChild(galleryDiv);
+                }
+                else if (contentItem.type === 'list') {
+                    const list = document.createElement(contentItem.ordered ? 'ol' : 'ul');
+                    list.className = `list-${contentItem.ordered ? 'decimal' : 'disc'} list-inside mb-4 text-gray-700`;
+                    
+                    contentItem.items.forEach(item => {
+                        const li = document.createElement('li');
+                        li.className = 'mb-2';
+                        li.textContent = item;
+                        list.appendChild(li);
+                    });
+                    
+                    newContent.appendChild(list);
+                }
+                else if (contentItem.type === 'quote') {
+                    const blockquote = document.createElement('blockquote');
+                    blockquote.className = 'border-l-4 border-green-500 pl-4 my-6 italic text-gray-700';
+                    blockquote.textContent = contentItem.text;
+                    
+                    if (contentItem.cite) {
+                        const cite = document.createElement('cite');
+                        cite.className = 'block mt-2 not-italic font-semibold';
+                        cite.textContent = `- ${contentItem.cite}`;
+                        blockquote.appendChild(cite);
+                    }
+                    
+                    newContent.appendChild(blockquote);
+                }
+                else if (contentItem.type === 'video') {
+                    const videoDiv = document.createElement('div');
+                    videoDiv.className = 'bg-gray-200 rounded-lg p-8 my-6 text-center relative group cursor-pointer';
+                    
+                    const overlay = document.createElement('div');
+                    overlay.className = 'absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition rounded-lg';
+                    videoDiv.appendChild(overlay);
+                    
+                    const icon = document.createElement('svg');
+                    icon.className = 'w-16 h-16 mx-auto mb-4 text-blue-600';
+                    icon.setAttribute('fill', 'currentColor');
+                    icon.setAttribute('viewBox', '0 0 20 20');
+                    icon.innerHTML = '<path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path>';
+                    videoDiv.appendChild(icon);
+                    
+                    const title = document.createElement('p');
+                    title.className = 'text-gray-600 font-semibold';
+                    title.textContent = contentItem.title || 'Video Placeholder';
+                    videoDiv.appendChild(title);
+                    
+                    if (contentItem.duration) {
+                        const duration = document.createElement('p');
+                        duration.className = 'text-sm text-gray-500 mt-1';
+                        duration.textContent = `Duration: ${contentItem.duration}`;
+                        videoDiv.appendChild(duration);
+                    }
+                    
+                    newContent.appendChild(videoDiv);
+                }
+                else if (contentItem.type === 'highlight') {
+                    const highlightDiv = document.createElement('div');
+                    highlightDiv.className = `bg-${contentItem.color || 'green'}-50 border-l-4 border-${contentItem.color || 'green'}-500 p-4 my-4`;
+                    
+                    const list = document.createElement(contentItem.ordered ? 'ol' : 'ul');
+                    list.className = `space-y-2 text-gray-700`;
+                    
+                    contentItem.items.forEach(item => {
+                        const li = document.createElement('li');
+                        if (item.includes(':')) {
+                            const parts = item.split(':');
+                            const strong = document.createElement('strong');
+                            strong.textContent = `${parts[0]}:`;
+                            li.appendChild(strong);
+                            li.appendChild(document.createTextNode(parts.slice(1).join(':')));
+                        } else {
+                            li.textContent = item;
+                        }
+                        list.appendChild(li);
+                    });
+                    
+                    highlightDiv.appendChild(list);
+                    newContent.appendChild(highlightDiv);
+                }
+            });
+
+            const oldProse = mainContent.querySelector('.prose');
+            if (oldProse) {
+                mainContent.replaceChild(newContent, oldProse);
+            } else {
+                mainContent.appendChild(newContent);
+            }
+
+            const categoriesContainer = mainContent.querySelector('.mt-8.pt-6.border-t.border-gray-200 .text-sm');
+            if (categoriesContainer && story.categories) {
+                categoriesContainer.innerHTML = `Categories: ${story.categories.map(cat => 
+                    `<span class="text-blue-600">${cat}</span>`
+                ).join(', ')}`;
+            }
+
+            setupEventListeners();
+            attachImageModalListeners();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function shareArticle() {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.querySelector('#headline h2').textContent,
+                    text: 'Check out this interesting article from University News Hub',
+                    url: window.location.href
+                }).catch(err => {
+                    console.log('Error sharing:', err);
+                });
+            } else {
+                const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(document.querySelector('#headline h2').textContent)}&url=${encodeURIComponent(window.location.href)}`;
+                window.open(shareUrl, '_blank');
+            }
+        }
+
+        function saveArticle() {
+            const saveButton = document.getElementById('saveButton');
+            saveButton.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Saving...
+                `;
+            setTimeout(() => {
+                saveButton.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                    </svg>
+                    Saved
+                    `;
+                saveButton.classList.remove('bg-green-600', 'hover:bg-green-700');
+                saveButton.classList.add('bg-green-700', 'cursor-default');
+                saveButton.disabled = true;
+            
+                document.body.appendChild(notification);
+                    setTimeout(() => {
+                    notification.classList.remove('translate-y-0', 'opacity-100');
+                    notification.classList.add('translate-y-2', 'opacity-0');
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }, 800);
+        }
+
+        function attachImageModalListeners() {
+            document.querySelectorAll('.expandable-image').forEach(img => {
+                img.addEventListener('click', () => {
+                    const fullSrc = img.dataset.fullSrc || img.src;
+                    modalImage.src = fullSrc;
+                    modalImage.alt = img.alt;
+                    modal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            
+            switch(e.key.toLowerCase()) {
+                case 'h':
+                    document.getElementById('headline').focus();
+                    document.getElementById('headline').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                case 'm':
+                    document.getElementById('main-content').focus();
+                    document.getElementById('main-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    break;
+                case 's':
+                    document.getElementById('sidebar').focus();
+                    document.getElementById('sidebar').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    break;
+                case 'escape':
+                    closeImageModal();
+                    break;
+            }
+        });
+
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const closeModalBtn = document.getElementById('closeModal');
+
+        document.querySelectorAll('.expandable-image').forEach(img => {
+            img.addEventListener('click', () => {
+                const fullSrc = img.dataset.fullSrc || img.src;
+                modalImage.src = fullSrc;
+                modalImage.alt = img.alt;
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        function closeImageModal() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        closeModalBtn.addEventListener('click', closeImageModal);
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeImageModal();
+            }
+        });
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(10px)';
+            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(el);
+        });
+
+        const infoButton = document.getElementById('infoButton');
+        const shortcutsPanel = document.getElementById('shortcutsPanel');
+        const closePanelButton = document.getElementById('closePanel');
+
+        infoButton.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            shortcutsPanel.classList.toggle('hidden');
+        });
+
+        closePanelButton.addEventListener('click', () => {
+            shortcutsPanel.classList.add('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!shortcutsPanel.contains(e.target)) {
+                shortcutsPanel.classList.add('hidden');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !shortcutsPanel.classList.contains('hidden')) {
+                shortcutsPanel.classList.add('hidden');
+            }
+        });
+
+        class ThemeToggle {
+            constructor() {
+                this.toggle = document.getElementById('theme-toggle');
+                this.init();
+            }
+
+            init() {
+                this.setInitialTheme();
+                this.toggle.addEventListener('click', () => this.toggleTheme());
+                this.listenForSystemPreferenceChanges();
+            }
+
+            setInitialTheme() {
+                const savedTheme = localStorage.getItem('theme');
+                const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                
+                if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            }
+
+            toggleTheme() {
+                const html = document.documentElement;
+                const isDark = html.getAttribute('data-theme') === 'dark';
+                
+                html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+                localStorage.setItem('theme', isDark ? 'light' : 'dark');
+                
+                this.toggle.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    this.toggle.style.transform = '';
+                }, 200);
+            }
+
+            listenForSystemPreferenceChanges() {
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                    if (!localStorage.getItem('theme')) {
+                        document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+                    }
+                });
+            }
+        }
+
+const newsStories = {
+        "green-funding": {
+        "id": "green-funding",
+        "title": "University Secures $3.2M to Expand Urban Agriculture Program",
+        "author": "Jasmine Lee",
+        "date": "June 18, 2025",
+        "readTime": "4 min read",
+        "leadImage": "https://via.placeholder.com/800x400/16A34A/FFFFFF?text=Urban+Farming+Grant",
+        "leadImageFull": "https://via.placeholder.com/1200x800/16A34A/FFFFFF?text=Urban+Farming+Full+View",
+        "leadImageCaption": "Urban gardens on campus will see a major expansion thanks to new funding",
+        "content": [
+            {
+            "type": "paragraph",
+            "text": "In a landmark development for sustainability and education, the university has been awarded a $3.2 million grant from the U.S. Department of Agriculture. This funding will empower the campus to grow its urban farming initiatives, creating opportunities for students to gain real-world experience in sustainable agriculture."
+            },
+            {
+            "type": "paragraph",
+            "text": "“This is more than a farming initiative,” said University President Alicia Monroe. “It's a chance to transform our food systems, involve the community, and empower our students to lead the future of green innovation.”"
+            },
+            {
+            "type": "gallery",
+            "images": [
+                {
+                "src": "https://via.placeholder.com/400x300/16A34A/FFFFFF?text=Rooftop+Garden",
+                "fullSrc": "https://via.placeholder.com/1200x900/16A34A/FFFFFF?text=Rooftop+Garden+Full",
+                "alt": "Existing rooftop garden on campus"
+                },
+                {
+                "src": "https://via.placeholder.com/400x300/166534/FFFFFF?text=Student+Farmers",
+                "fullSrc": "https://via.placeholder.com/1200x900/166534/FFFFFF?text=Student+Farmers+Full",
+                "alt": "Students tending to campus gardens"
+                }
+            ]
+            },
+            {
+            "type": "heading",
+            "text": "Project Goals and Impact",
+            "level": 3,
+            "color": "green"
+            },
+            {
+            "type": "paragraph",
+            "text": "The grant will support a multi-phase initiative focused on expanding green infrastructure, boosting food equity, and integrating sustainability into the student experience."
+            },
+            {
+            "type": "list",
+            "items": [
+                "Rooftop gardens on five new buildings by 2026",
+                "Launch of a student-run urban farm cooperative",
+                "Community food education programs targeting local neighborhoods",
+                "Scholarships for students specializing in sustainable agriculture"
+            ]
+            },
+            {
+            "type": "quote",
+            "text": "This grant represents a transformative opportunity to connect our students with sustainable food systems while serving our local community.",
+            "cite": "Dr. Rachel Wong, Environmental Sciences"
+            },
+            {
+            "type": "heading",
+            "text": "Student Involvement and Opportunities",
+            "level": 3,
+            "color": "green"
+            },
+            {
+            "type": "paragraph",
+            "text": "The initiative will create over 50 paid student roles in project management, research, and farming operations. A new ‘Green Ambassadors’ program will give students leadership roles in food sustainability campaigns on and off campus."
+            },
+            {
+            "type": "highlight",
+            "items": [
+                "Student internships in agriculture and food justice",
+                "New electives on climate-smart farming",
+                "Partnerships with local schools for youth gardening"
+            ],
+            "color": "green"
+            },
+            {
+            "type": "heading",
+            "text": "Implementation Timeline",
+            "level": 3
+            },
+            {
+            "type": "highlight",
+            "items": [
+                "Fall 2025: Launch of pilot gardens and student hiring",
+                "Spring 2026: Full operation of rooftop gardens and urban farm co-op",
+                "2027: Evaluation and potential expansion to satellite campuses"
+            ],
+            "color": "green"
+            },
+            {
+            "type": "paragraph",
+            "text": "As universities nationwide look for ways to foster sustainability and resilience, this urban agriculture expansion places the university at the forefront of a growing movement that marries education with environmental action."
+            }
+        ],
+        "categories": ["Campus News", "Agriculture"]
+        },
+        "ai-partnership": {
+        "id": "ai-partnership",
+        "title": "New AI Partnership Aims to Advance Ethical Tech Development",
+        "author": "Liam Davis",
+        "date": "June 12, 2025",
+        "readTime": "3 min read",
+        "leadImage": "https://via.placeholder.com/800x400/0EA5E9/FFFFFF?text=AI+Partnership",
+        "leadImageFull": "https://via.placeholder.com/1200x800/0EA5E9/FFFFFF?text=AI+Ethics+Collaboration",
+        "leadImageCaption": "Representatives from both institutions sign the AI ethics partnership agreement",
+        "content": [
+            {
+            "type": "paragraph",
+            "text": "In a bold step toward responsible technology, the university has entered a strategic partnership with cutting-edge tech firm NeuralNova to co-develop artificial intelligence systems rooted in ethics, equity, and public good."
+            },
+            {
+            "type": "paragraph",
+            "text": "Announced during a joint press conference, the agreement paves the way for interdisciplinary collaboration between engineers, ethicists, and social scientists to shape the future of AI. The initiative highlights a shared commitment to developing systems that are transparent, inclusive, and safe."
+            },
+            {
+            "type": "gallery",
+            "images": [
+                {
+                "src": "https://via.placeholder.com/400x300/0EA5E9/FFFFFF?text=AI+Ethics+Lab",
+                "fullSrc": "https://via.placeholder.com/1200x900/0EA5E9/FFFFFF?text=AI+Ethics+Lab+Full",
+                "alt": "Researchers discussing ethical AI design"
+                },
+                {
+                "src": "https://via.placeholder.com/400x300/0284C7/FFFFFF?text=Tech+Symposium",
+                "fullSrc": "https://via.placeholder.com/1200x900/0284C7/FFFFFF?text=AI+Symposium+Full",
+                "alt": "Panel at annual AI ethics symposium"
+                }
+            ]
+            },
+            {
+            "type": "heading",
+            "text": "Focus on Responsible Innovation",
+            "level": 3,
+            "color": "sky"
+            },
+            {
+            "type": "paragraph",
+            "text": "The cornerstone of the partnership is a new AI Ethics Lab, housed within the School of Computer Science. This lab will focus on developing frameworks for algorithmic fairness, data transparency, and societal accountability."
+            },
+            {
+            "type": "list",
+            "items": [
+                "AI Ethics Lab co-managed by faculty and industry leaders",
+                "Fellowship Program for underrepresented voices in tech",
+                "Annual AI & Society Conference hosted on campus"
+            ]
+            },
+            {
+            "type": "quote",
+            "text": "Our goal is to embed ethics at the heart of innovation and ensure AI serves the public good.",
+            "cite": "Dr. Miguel Ortega, Director of AI Research"
+            },
+            {
+            "type": "heading",
+            "text": "Student Engagement and Research Pathways",
+            "level": 3,
+            "color": "sky"
+            },
+            {
+            "type": "paragraph",
+            "text": "Undergraduate and graduate students will gain access to research assistantships, mentorship from tech professionals, and dedicated space to prototype AI solutions that prioritize accessibility and fairness."
+            },
+            {
+            "type": "highlight",
+            "items": [
+                "AI in Education: Tools for inclusive learning environments",
+                "Bias Audits: Student-led analysis of real-world algorithms",
+                "Ethics Hackathon: A new campus-wide competition"
+            ],
+            "color": "sky"
+            },
+            {
+            "type": "heading",
+            "text": "Roadmap for the Collaboration",
+            "level": 3
+            },
+            {
+            "type": "highlight",
+            "items": [
+                "Summer 2025: Launch of lab and open applications for fellowships",
+                "2026: Release of first co-authored ethical AI development toolkit",
+                "2027: Assessment of AI-driven tools for student services"
+            ],
+            "color": "sky"
+            },
+            {
+            "type": "paragraph",
+            "text": "With AI increasingly shaping daily life, the university's commitment to ethical tech development signals its intention to lead not just in innovation—but in responsibility and integrity as well."
+            }
+        ],
+        "categories": ["Technology", "Research", "Ethics"]
+        },
+        "library-renovation": {
+        "id": "library-renovation",
+        "title": "Students Applaud Completion of Modernized Library Renovation",
+        "author": "Natalie Perez",
+        "date": "June 5, 2025",
+        "readTime": "3 min read",
+        "leadImage": "https://via.placeholder.com/800x400/4B5563/FFFFFF?text=Library+Renovation",
+        "leadImageFull": "https://via.placeholder.com/1200x800/4B5563/FFFFFF?text=Renovated+Library+Full",
+        "leadImageCaption": "New collaborative study spaces inside the renovated library",
+        "content": [
+            {
+            "type": "paragraph",
+            "text": "After nearly two years of anticipation, the university library has reopened to student praise and admiration. The $15M renovation has transformed the space into a hub of modern learning, tech access, and inclusive study design."
+            },
+            {
+            "type": "paragraph",
+            "text": "Hundreds of students filled the halls during the grand reopening, exploring features like AI-powered search stations, silent zones, and digital media labs. \"It’s like stepping into the future,\" said student Rina Patel. \"Everything about the space is built to reduce stress and increase focus.\""
+            },
+            {
+            "type": "gallery",
+            "images": [
+                {
+                "src": "https://via.placeholder.com/400x300/374151/FFFFFF?text=Media+Room",
+                "fullSrc": "https://via.placeholder.com/1200x900/374151/FFFFFF?text=Media+Room+Full",
+                "alt": "Modern digital media lab with equipment"
+                },
+                {
+                "src": "https://via.placeholder.com/400x300/6B7280/FFFFFF?text=Study+Pod",
+                "fullSrc": "https://via.placeholder.com/1200x900/6B7280/FFFFFF?text=Study+Pod+Full",
+                "alt": "Student using a private study pod"
+                }
+            ]
+            },
+            {
+            "type": "heading",
+            "text": "What’s New in the Library?",
+            "level": 3,
+            "color": "gray"
+            },
+            {
+            "type": "list",
+            "items": [
+                "24/7 access to study lounges with café services",
+                "Interactive research walls and smart whiteboards",
+                "Dedicated zones for quiet study and group collaboration",
+                "Voice-activated book search and checkout kiosks"
+            ]
+            },
+            {
+            "type": "paragraph",
+            "text": "Designed in consultation with student focus groups, the renovation emphasizes flexibility. Mobile furniture, noise-controlled rooms, and wheelchair-accessible stations ensure that all users feel comfortable and supported."
+            },
+            {
+            "type": "quote",
+            "text": "It’s like walking into the future—everything about the space makes studying feel less stressful.",
+            "cite": "Rina Patel, Second-Year Student"
+            },
+            {
+            "type": "heading",
+            "text": "Next-Gen Library Milestones",
+            "level": 3
+            },
+            {
+            "type": "highlight",
+            "items": [
+                "June 2025: Grand reopening with live demos and tours",
+                "Fall 2025: Integration of virtual and augmented reality for immersive research",
+                "2026: Ongoing upgrades based on real-time feedback via student dashboard"
+            ],
+            "color": "gray"
+            },
+            {
+            "type": "paragraph",
+            "text": "The library is more than just a building—it’s now a living, evolving academic ecosystem. By merging tech innovation with user-centered design, the university sets a new standard for academic spaces in the digital age."
+            }
+        ],
+        "categories": ["Campus Life", "Facilities", "Innovation"]
+        }
+        };
+            document.getElementById('shareButton').addEventListener('click', function() {
+        if (navigator.share) {
+            navigator.share({
+                title: document.querySelector('#headline h2').textContent,
+                text: 'Check out this interesting article from University News Hub',
+                url: window.location.href
+            }).catch(err => {
+                console.log('Error sharing:', err);
+            });
+        } else {
+            const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(document.querySelector('#headline h2').textContent)}&url=${encodeURIComponent(window.location.href)}`;
+            window.open(shareUrl, '_blank');
+        }
+    });
+
+    backButton.addEventListener('click', () => {
+        if (storyHistory.length > 0) {
+            const previousStory = storyHistory.pop();
+
+            document.getElementById('headline').innerHTML = previousStory.headline;
+            document.getElementById('main-content').innerHTML = previousStory.content;
+
+            document.getElementById('shareButton').addEventListener('click', shareArticle);
+            document.getElementById('saveButton').addEventListener('click', saveArticle);
+            attachImageModalListeners();
+
+            if (storyHistory.length === 0) {
+                backButton.classList.add('hidden');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    });
+    </script>
+    <footer class="bg-slate-900 text-white mt-8">
+        <div class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-bold mb-2">University News Hub</h3>
+                    <p class="text-gray-400 text-sm mb-3">
+                        The leading source for campus news, events, and academic updates.
+                    </p>
+                        <div class="flex space-x-3">
+                            <!-- Facebook -->
+                            <a href="https://www.facebook.com" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            class="text-gray-400 hover:text-white transition"
+                            aria-label="Facebook de la Universidad">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                            
+                            <!-- Twitter/X -->
+                            <a href="https://twitter.com" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            class="text-gray-400 hover:text-white transition"
+                            aria-label="X (Twitter) de la Universidad">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+                                </svg>
+                            </a>
+                            
+                            <!-- Instagram -->
+                            <a href="https://www.instagram.com" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            class="text-gray-400 hover:text-white transition"
+                            aria-label="Instagram de la Universidad">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </div>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Contact Us</h3>
+                    <address class="not-italic text-gray-400 text-sm">
+                        <p class="mb-1">123 University Avenue</p>
+                        <p class="mb-1">University City, UC 12345</p>
+                        <p class="mb-1">Phone: (123) 456-7890</p>
+                    </address>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="border-t border-gray-700 mt-6 pt-6 text-center text-gray-400 text-xs">
+                <p>&copy; 2025 University News Hub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
